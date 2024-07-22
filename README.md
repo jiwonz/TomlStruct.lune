@@ -50,4 +50,5 @@ print("decoded:\n", decoded)
 ```
 
 ## Credit
+[toml](https://toml.io/en/)
 [toml.lua](https://github.com/jonstoler/lua-toml)
