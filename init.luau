@@ -46,10 +46,11 @@ function TomlStruct.encode(self, tbl: any)
 	local cache = {}
 
 	local function parse(t, struct: any)
+		warn(toml)
 		for _, keyValue in struct :: any do
 			local key = keyValue[1]
 			local valueType = keyValue[2]
-			if key == nil or valueType == nil then
+			if key == nil then
 				toml ..= "\n"
 				continue
 			end
@@ -153,17 +154,25 @@ function TomlStruct.encode(self, tbl: any)
 					toml = toml:sub(1, -3)
 					toml ..= " }\n"
 				end
-			elseif type(valueType) == "table" then
+			elseif type(valueType) == "table" or valueType == nil then
 				-- just a key/value table, folks
 				table.insert(cache, key)
 				toml = toml .. "[" .. table.concat(cache, ".") .. "]\n"
 				--table.remove(cache)
 
 				local st = {}
-				for i = 2, #keyValue do
-					table.insert(st , keyValue[i])
+				if valueType == nil then
+					print(t, key)
+					for k, v in value do
+						table.insert(st, { k, typeof(v) })
+					end
+					table.remove(cache)
+				else
+					for i = 2, #keyValue do
+						table.insert(st , keyValue[i])
+					end
 				end
-				--print(st)
+				print("REEEEEE", st)
 				parse(value, st)
 			end
 		end
@@ -178,7 +187,7 @@ function TomlStruct.decode(self, toml)
 	for _, keyValue in self :: any do
 		local key = keyValue[1]
 		local valueType = keyValue[2]
-		if key == nil or valueType == nil then
+		if key == nil then
 			continue
 		end
 		local value = t[key]

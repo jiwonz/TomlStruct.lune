@@ -1,5 +1,5 @@
 # TomlStruct.lune
-Structurable `toml` parser for `lune`
+Flexible and structurable `toml` parser for `lune`
 
 ## Note
 kinda messy and can be buggy (but tested)
@@ -15,14 +15,15 @@ kinda messy and can be buggy (but tested)
 ```lua
 local toml = TomlStruct(
 	{ "sans", "table" }, -- { keyName, valueType }
-	{ "hello", "string" },
+	{ "hello", "any" }, -- any type
 	{ }, -- skip this line!
 	{ "goodboy", -- table
 		{ "key", "string" },
 		{ "deep",
 			{ "omg", "number?" }, -- optional value
 			{ "test", "table" } -- inline table or array or array table
-		}
+		},
+		{ "objects" } -- blank table (any items can be written into it!)
 	}
 )
 
@@ -34,6 +35,9 @@ local tbl = {
 		deep = {
 			omg = 5,
 			test = { 1, 2, 3 }
+		},
+		objects = {
+			anything = "xd"
 		}
 	}
 }
