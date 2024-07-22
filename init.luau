@@ -172,7 +172,7 @@ function TomlStruct.encode(self, tbl: any)
 						table.insert(st , keyValue[i])
 					end
 				end
-				print("REEEEEE", st)
+				--print("REEEEEE", st)
 				parse(value, st)
 			end
 		end
