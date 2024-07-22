@@ -5,7 +5,7 @@ if _VERSION:find("Lune") then
 	serde = require("@lune/serde")
 end
 
-export type KVItem = { "string" | "number" | "table" | string | KVItem }
+export type KVItem = { "string" | "number" | "boolean" | "table" | "any" | string | KVItem }
 
 export type TomlStruct<T> = typeof(setmetatable(
 	{} :: {},
