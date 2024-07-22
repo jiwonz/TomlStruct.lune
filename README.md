@@ -9,7 +9,7 @@ kinda messy and can be buggy (but tested)
 - Setting item orders
 - Adding blank lines
 - Inline tables
-- Decode by `@lune/serde` and typecheck
+- Decode with `@lune/serde` and typecheck
 
 ## Example
 ```lua
