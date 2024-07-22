@@ -61,7 +61,7 @@ function TomlStruct.encode(self, tbl: any)
 				end
 			end
 			local value = t[key]
-			if (value == nil and optional) or valueType == nil then
+			if (value == nil and optional) or (valueType == nil and value == nil) then
 				continue
 			end
 			local isAny = false
@@ -91,7 +91,7 @@ function TomlStruct.encode(self, tbl: any)
 				value = value:gsub("\f", "\\f")
 				value = value:gsub("\r", "\\r")
 				value = value:gsub('"', '\\"')
-				value = value:gsub("/", "\\/")
+				--value = value:gsub("/", "\\/") wtf?
 				toml = toml .. key .. " = " .. quote .. value .. quote .. "\n"
 			elseif valueType == "table" then -- including: array, table array, inline table
 				local array, arrayTable = true, true
