@@ -53,9 +53,23 @@ function TomlStruct.encode(self, tbl: any)
 				toml ..= "\n"
 				continue
 			end
+			local optional
+			if type(valueType) == "string" then
+				optional = valueType:sub(-1) == "?"
+				if optional then
+					valueType = valueType:sub(1, -2)
+				end
+			end
 			local value = t[key]
-			if typeof(value) ~= valueType and type(valueType) == "string" then
-				print(keyValue)
+			if value == nil and optional then
+				continue
+			end
+			local isAny = false
+			if valueType == "any" then
+				valueType = typeof(value)
+				isAny = true
+			end
+			if not isAny and typeof(value) ~= valueType and type(valueType) == "string" then
 				error("Invalid value type '" .. typeof(value) .. "' expected '" .. valueType .. "'")
 			end
 			if valueType == "boolean" or valueType == "number" then
@@ -168,7 +182,7 @@ function TomlStruct.decode(self, toml)
 			continue
 		end
 		local value = t[key]
-		if typeof(value) ~= valueType and type(valueType) == "string" then
+		if valueType ~= "any" and typeof(value) ~= valueType and type(valueType) == "string" then
 			print(keyValue)
 			error("Invalid value type '" .. typeof(value) .. "' expected '" .. valueType .. "'")
 		end

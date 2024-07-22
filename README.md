@@ -2,7 +2,7 @@
 Structurable `toml` parser for `lune`
 
 ## Note
-kinda messy and can be buggy
+kinda messy and can be buggy (but tested)
 
 ## Features
 - Runtime typechecking
@@ -20,7 +20,7 @@ local toml = TomlStruct(
 	{ "goodboy", -- table
 		{ "key", "string" },
 		{ "deep",
-			{ "omg", "number" },
+			{ "omg", "number?" }, -- optional value
 			{ "test", "table" } -- inline table or array or array table
 		}
 	}
