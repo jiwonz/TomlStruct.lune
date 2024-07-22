@@ -61,7 +61,7 @@ function TomlStruct.encode(self, tbl: any)
 				end
 			end
 			local value = t[key]
-			if value == nil and optional then
+			if (value == nil and optional) or valueType == nil then
 				continue
 			end
 			local isAny = false
@@ -161,7 +161,6 @@ function TomlStruct.encode(self, tbl: any)
 
 				local st = {}
 				if valueType == nil then
-					print(t, key)
 					for k, v in value do
 						table.insert(st, { k, typeof(v) })
 					end
