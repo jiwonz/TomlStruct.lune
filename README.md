@@ -4,17 +4,24 @@ Structurable `toml` parser for `lune`
 ## Note
 kinda messy and can be buggy
 
+## Features
+- Runtime typechecking
+- Setting item orders
+- Adding blank lines
+- Inline tables
+- Decode by `@lune/serde` and typecheck
+
 ## Example
 ```lua
 local toml = TomlStruct(
-	{ "sans", "table" },
+	{ "sans", "table" }, -- { keyName, valueType }
 	{ "hello", "string" },
-	{ },
-	{ "goodboy",
+	{ }, -- skip this line!
+	{ "goodboy", -- table
 		{ "key", "string" },
 		{ "deep",
 			{ "omg", "number" },
-			{ "test", "table" }
+			{ "test", "table" } -- inline table or array or array table
 		}
 	}
 )
