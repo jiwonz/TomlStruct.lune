@@ -46,7 +46,6 @@ function TomlStruct.encode(self, tbl: any)
 	local cache = {}
 
 	local function parse(t, struct: any)
-		warn(toml)
 		for _, keyValue in struct :: any do
 			local key = keyValue[1]
 			local valueType = keyValue[2]
