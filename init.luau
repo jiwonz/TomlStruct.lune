@@ -148,12 +148,14 @@ function TomlStruct.encode(self, tbl: any)
 					toml ..= " }\n"
 				end
 			elseif type(valueType) == "table" or valueType == nil then
-				-- just a key/value table, folks
-				table.insert(cache, key)
-				toml = toml .. "[" .. table.concat(cache, ".") .. "]\n"
-				--table.remove(cache)
-
+				if value then
+					-- just a key/value table, folks
+					table.insert(cache, key)
+					toml = toml .. "[" .. table.concat(cache, ".") .. "]\n"
+					--table.remove(cache)
+				end
 				local st = {}
+				optional = false
 				if valueType == nil then
 					for k, v in value do
 						table.insert(st, { k, typeof(v) })
@@ -161,17 +163,34 @@ function TomlStruct.encode(self, tbl: any)
 					table.remove(cache)
 				else
 					for i = 2, #keyValue do
-						table.insert(st, keyValue[i])
+						local item = keyValue[i]
+						if type(item) == "table" then
+							table.insert(st, keyValue[i])
+						elseif item == "?" then
+							optional = true
+						end
 					end
 				end
-				--print("REEEEEE", st)
+				if value == nil then
+					if optional then
+						continue
+					else
+						error(`pack of KVItem is required for key '{key}'`)
+					end
+				end
 				parse(value, st)
 			end
 		end
 	end
 	parse(tbl, self)
 
-	return toml:sub(1, -2)
+	local result = toml:sub(1, -2)
+
+	if result:sub(-1) ~= "\n" then
+		result ..= "\n"
+	end
+
+	return result
 end
 
 function TomlStruct.decode(self, toml)
