@@ -7,19 +7,13 @@ end
 
 export type KVItem = { "string" | "number" | "boolean" | "table" | "any" | string | KVItem }
 
-export type TomlStruct<T> = typeof(setmetatable(
-	{} :: {},
-	{} :: TomlStructImpl
-))
-
-type TomlStructImpl = {
-	__index: TomlStructImpl,
-	encode: <T>(self: TomlStruct<T>, tbl: T) -> (string),
-	decode: <T>(self: TomlStruct<T>, toml: string) -> (T),
+export type TomlStruct<T> = {
+	encode: (self: TomlStruct<T>, tbl: T) -> string,
+	decode: (self: TomlStruct<T>, toml: string) -> T,
 }
 
-local TomlStruct = {} :: TomlStructImpl
-TomlStruct.__index = TomlStruct
+local TomlStruct = {} :: TomlStruct<any>;
+(TomlStruct :: any).__index = TomlStruct
 
 local function toKeyValues(tbl: { [any]: any }): { KVItem }
 	local keyValues = {}
@@ -31,7 +25,7 @@ end
 
 local function toString(str: any)
 	if type(str) == "string" then
-		return "\"" .. str .. "\""
+		return '"' .. str .. '"'
 	end
 	return tostring(str)
 end
@@ -121,7 +115,7 @@ function TomlStruct.encode(self, tbl: any)
 						}
 						]]
 						table.insert(cache, key)
-						for kk, vv in pairs(value) do
+						for _, vv in pairs(value) do
 							toml = toml .. "[[" .. table.concat(cache, ".") .. "]]\n"
 							for k3, v3 in vv do
 								if type(v3) ~= "table" then
@@ -138,7 +132,7 @@ function TomlStruct.encode(self, tbl: any)
 					else
 						-- plain ol boring array
 						toml ..= key .. " = [ "
-						for kk, vv in first do
+						for _, vv in first do
 							toml ..= toString(vv) .. ", "
 						end
 						toml = toml:sub(1, -3)
@@ -167,7 +161,7 @@ function TomlStruct.encode(self, tbl: any)
 					table.remove(cache)
 				else
 					for i = 2, #keyValue do
-						table.insert(st , keyValue[i])
+						table.insert(st, keyValue[i])
 					end
 				end
 				--print("REEEEEE", st)
