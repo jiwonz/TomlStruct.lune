@@ -45,7 +45,6 @@ function TomlStruct.encode(self, tbl: any, pretty: boolean)
 			local key = keyValue[1]
 			local valueType = keyValue[2]
 			if key == nil then
-				print(key)
 				if not wasBlank then
 					toml ..= "\n"
 				end
