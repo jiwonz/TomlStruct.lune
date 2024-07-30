@@ -30,7 +30,7 @@ local function toString(str: any)
 	return tostring(str)
 end
 
-function TomlStruct.encode(self, tbl: any)
+function TomlStruct.encode(self, tbl: any, pretty: boolean)
 	if type(tbl :: any) ~= "table" then
 		error("Only table can be encoded into toml!")
 	end
@@ -38,15 +38,21 @@ function TomlStruct.encode(self, tbl: any)
 	local toml = ""
 
 	local cache = {}
+	local wasBlank = false
 
 	local function parse(t, struct: any)
 		for _, keyValue in struct :: any do
 			local key = keyValue[1]
 			local valueType = keyValue[2]
 			if key == nil then
-				toml ..= "\n"
+				print(key)
+				if not wasBlank then
+					toml ..= "\n"
+				end
+				wasBlank = true
 				continue
 			end
+			wasBlank = false
 			local optional
 			if type(valueType) == "string" then
 				optional = valueType:sub(-1) == "?"
@@ -186,8 +192,11 @@ function TomlStruct.encode(self, tbl: any)
 
 	local result = toml:sub(1, -2)
 
-	if result:sub(-1) ~= "\n" then
-		result ..= "\n"
+	if pretty then
+		result = result:gsub("^%s*(.-)%s*$", "%1")
+		if result:sub(-1) ~= "\n" then
+			result ..= "\n"
+		end
 	end
 
 	return result
@@ -202,8 +211,17 @@ function TomlStruct.decode(self, toml)
 			continue
 		end
 		local value = t[key]
+		local optional
+		if type(valueType) == "string" then
+			optional = valueType:sub(-1) == "?"
+			if optional then
+				valueType = valueType:sub(1, -2)
+			end
+		end
+		if (value == nil and optional) or (valueType == nil and value == nil) then
+			continue
+		end
 		if valueType ~= "any" and typeof(value) ~= valueType and type(valueType) == "string" then
-			print(keyValue)
 			error("Invalid value type '" .. typeof(value) .. "' expected '" .. valueType .. "'")
 		end
 	end
