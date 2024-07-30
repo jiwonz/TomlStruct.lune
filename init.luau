@@ -8,7 +8,7 @@ end
 export type KVItem = { "string" | "number" | "boolean" | "table" | "any" | string | KVItem }
 
 export type TomlStruct<T> = {
-	encode: (self: TomlStruct<T>, tbl: T) -> string,
+	encode: (self: TomlStruct<T>, tbl: T, pretty: boolean) -> string,
 	decode: (self: TomlStruct<T>, toml: string) -> T,
 }
 
