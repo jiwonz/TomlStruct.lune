@@ -1,9 +1,7 @@
 --!strict
 
-local serde
-if _VERSION:find("Lune") then
-	serde = require("@lune/serde")
-end
+local serde = require("@lune/serde")
+local stdio = require("@lune/stdio")
 
 export type KVItem = { "string" | "number" | "boolean" | "table" | "any" | string | KVItem }
 
@@ -184,6 +182,13 @@ function TomlStruct.encode(self, tbl: any, pretty: boolean)
 					end
 				end
 				parse(value, st)
+			end
+			local conditionalCallback = keyValue[3]
+			if conditionalCallback then
+				local valid, msg = conditionalCallback(value)
+				if not valid then
+					error(`Conditional callback assertion failed{ if msg ~= nil then`: {msg} ` else "" }(got {stdio.format(value)})`)
+				end
 			end
 		end
 	end
