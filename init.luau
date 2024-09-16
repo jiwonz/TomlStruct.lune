@@ -185,8 +185,8 @@ function TomlStruct.encode(self, tbl: any, pretty: boolean)
 			end
 			local conditionalCallback = keyValue[3]
 			if conditionalCallback then
-				local valid, msg = conditionalCallback(value)
-				if not valid then
+				local msg = conditionalCallback(value)
+				if msg then
 					error(`Conditional callback assertion failed{ if msg ~= nil then`: {msg} ` else "" }(got {stdio.format(value)})`)
 				end
 			end
