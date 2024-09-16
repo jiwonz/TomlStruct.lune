@@ -23,10 +23,11 @@ local toml = TomlStruct(
 			{ "omg", "number?" }, -- optional value
 			{ "test", "table" } -- inline table or array or array table
 		},
-		{ "bigger_than_zero", "number", function(value: number)
+		{ "bigger_than_zero", "number", function(value: number): string? -- this 'string' is an error message!
 			if value > 0 then
 				return "Number must be bigger than zero"
 			end
+			return
 		end},
 		{ "objects" } -- blank table (any items can be written into it!)
 	}

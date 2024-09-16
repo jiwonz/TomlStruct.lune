@@ -3,7 +3,7 @@
 local serde = require("@lune/serde")
 local stdio = require("@lune/stdio")
 
-export type KVItem = { "string" | "number" | "boolean" | "table" | "any" | string | KVItem }
+export type KVItem = { "string" | "number" | "boolean" | "table" | "any" | string | KVItem | (value: any) -> (string?) }
 
 export type TomlStruct<T> = {
 	encode: (self: TomlStruct<T>, tbl: T, pretty: boolean) -> string,
@@ -186,7 +186,7 @@ function TomlStruct.encode(self, tbl: any, pretty: boolean)
 			local conditionalCallback = keyValue[3]
 			if conditionalCallback then
 				local msg = conditionalCallback(value)
-				if msg then
+				if msg ~= nil then
 					error(`Conditional callback assertion failed{ if msg ~= nil then`: {msg} ` else "" }(got {stdio.format(value)})`)
 				end
 			end
