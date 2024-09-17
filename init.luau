@@ -184,7 +184,7 @@ function TomlStruct.encode(self, tbl: any, pretty: boolean)
 				parse(value, st)
 			end
 			local conditionalCallback = keyValue[3]
-			if conditionalCallback then
+			if conditionalCallback and type(conditionalCallback) == "function" then
 				local msg = conditionalCallback(value)
 				if msg ~= nil then
 					error(`Conditional callback assertion failed{ if msg ~= nil then`: {msg} ` else "" }(got {stdio.format(value)})`)
@@ -229,7 +229,7 @@ function TomlStruct.decode(self, toml)
 			error("Invalid value type '" .. typeof(value) .. "' expected '" .. valueType .. "'")
 		end
 		local conditionalCallback = keyValue[3]
-		if conditionalCallback then
+		if conditionalCallback and type(conditionalCallback) == "function" then
 			local msg = conditionalCallback(value)
 			if msg ~= nil then
 				error(`Conditional callback assertion failed{ if msg ~= nil then`: {msg} ` else "" }(got {stdio.format(value)})`)
