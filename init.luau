@@ -228,6 +228,13 @@ function TomlStruct.decode(self, toml)
 		if valueType ~= "any" and typeof(value) ~= valueType and type(valueType) == "string" then
 			error("Invalid value type '" .. typeof(value) .. "' expected '" .. valueType .. "'")
 		end
+		local conditionalCallback = keyValue[3]
+		if conditionalCallback then
+			local msg = conditionalCallback(value)
+			if msg ~= nil then
+				error(`Conditional callback assertion failed{ if msg ~= nil then`: {msg} ` else "" }(got {stdio.format(value)})`)
+			end
+		end
 	end
 	return t
 end
